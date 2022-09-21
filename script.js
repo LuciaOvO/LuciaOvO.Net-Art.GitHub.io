@@ -59,6 +59,8 @@ function setup() { // runs once, at the start
   
   tocolor = color("#FEE3EC"); // set up "tocolor" equal to color"#FEE3EC"
   fromcolor = color("#F2789F"); // set up "tocolor" equal to color"#F2789F"
+
+  // noLoop();
   
   
 }
