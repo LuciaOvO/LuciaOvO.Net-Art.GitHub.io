@@ -4,17 +4,6 @@ document.body.style.overflow = `hidden`
 let particles = [];// declare variable "particales"
                    // assigning to it an empty array
 
-// let pcolor = [
-//   "#0b1b3466",
-//   "#33669980",
-//   "#3d79c6",
-//   "#1e3655",
-//   "#286698",
-//   "#2a67a5cc",
-//   "#3178a6",
-//   "#00003373",
-// ];
-
 // declare variable "pcolor",assigning to 8 colors array
 let pcolor = [ 
   "#F65A83",
@@ -27,42 +16,43 @@ let pcolor = [
   "#F2D1D1",
 ];
 
-// let pcolor = [ 
-//   "#495C83",
-//   "#7A86B6",
-//   "#A8A4CE",
-//   "#C8B6E2",
-//   "#B1B2FF",
-//   "#AAC4FF",
-//   "#D2DAFF",
-//   "#EEF1FF",
-// ];
-
 let tocolor;//create variable "tocolor"
 let fromcolor;// create variable "fromcolor"
 
-let amt;
-
+let season; // create variable"season"
+            
 let particleNum = 0;//create variable "particleNum"
 
 //imaginary circle to move around and get sin of angle
 let angle = 0;
 
+// Tree Canvas
+// create a new variable "extraCanvas"
+// using this canvas for static object 
+let extraCanvas;
 
 function setup() { // runs once, at the start
-  createCanvas(windowWidth, windowHeight);// creating a canvas
+  windowResized ();
+
+  createCanvas(window.innerWidth, window.innerHeight);// creating a canvas
                                           // window pixels wide &
                                           // window pixels tall
   angleMode(DEGREES); 
-  // tocolor = color("#cdd6e3");
-  // fromcolor = color("#474a4e");
   
   tocolor = color("#FEE3EC"); // set up "tocolor" equal to color"#FEE3EC"
   fromcolor = color("#F2789F"); // set up "tocolor" equal to color"#F2789F"
-
-  // noLoop();
   
+  extraCanvas = createGraphics(window.innerWidth, window.innerHeight);
+ 
+  // setting the angle mode in the graphics object
+  extraCanvas.angleMode(DEGREES);
   
+  // translating in the graphics object 
+  // Created tree in the middle of the screen near the bottom
+  extraCanvas.translate(window.innerWidth/2,window.innerHeight/2+400);
+  
+  // Call function branch to create the tree and extracanvas
+  branch(130,extraCanvas);
 }
 
 function draw() { // loops, after setup has run
@@ -110,10 +100,18 @@ function draw() { // loops, after setup has run
   
 //----End Background color setting-------
   
+  
+//-----load Tree canvas -----
+    
+  image (extraCanvas, 0, 0);
+
+//-----end setting------
+
+
+  
 //----Particles Part------
   
   particleNum++;// The particleNum is equal to the particleNum plus 1
-  
   // console.log( particleNum);
       
   // IF the number of ParticleNum self-increased multiple 2 equals 0
@@ -133,13 +131,7 @@ function draw() { // loops, after setup has run
     particles[i].drawParticle();
     particles[i].moveParticle();
   } 
-  
 //------end Particles Part-------
-  
-//-----Tree setting-----
-  translate(width/2,height/2+200);
-  branch(100);
-//-----end Tree setting------
 
 }
 
@@ -166,27 +158,77 @@ function mouseMoved() {
 }
 
 //----Tree function-------
-function branch(len){ 
-  push();
+// the graphics object is passed in as the second argument
+// it will assign to the parameter 'cnv'
+function branch(len, cnv){ 
+  
+  // push context on the graphics object
+  cnv.push();
+  
+  //if len greater than 10
   if(len>10){
-    strokeWeight(map(len,10,100,1,15));
-    stroke(70,40,20)
-    line(0,0,0,-len)
-    translate(0,-len);
-    rotate(random(-20,-30));
-    branch(len*random(0.7,0.9));
-    rotate(random(50,60));
-    branch(len*random(0.7,0.9))  
+    
+    // set stroke weight on the graphics object
+    // map len property from 10-100 Corresponding values 1-15
+    cnv.strokeWeight(map(len,10,100,1,15));
+    
+    // set stroke colour on the graphics object
+    cnv.stroke(70,40,20);
+    
+    // draw a line to the graphics object
+    // x1,x2,y1 equal to 0 
+    //the y-coordinate of the second point value equal to -len
+    cnv.line(0,0,0,-len);
+    
+    // translate in the graphics object
+    cnv.translate(0,-len);
+    
+    // rotate in the graphics object
+    // rotate value control by Random values in the range of 20 to 30
+    cnv.rotate(random(-20,-30));
+    
+    // pass the graphics object to the next recursive call
+    branch(len*random(0.7,0.9), cnv);
+    
+    // rotate in the graphics object
+    cnv.rotate(random(50,60));
+    
+    // pass the graphics object to the next recursive call
+    branch(len*random(0.7,0.9), cnv)  
   }else{
     var r = 100 + random(-20,20);
     var g = 150 + random(-20,20);
     var b = 200 + random(-20,20);
-    fill(r,g,b);
-    noStroke();
-    ellipse(0,0,10)
+    
+    // set fill colour on graphics object
+    cnv.fill(r,g,b,200);
+    
+    // set no stroke mode on graphics object
+    cnv.noStroke();
+    
+    // draw a circle to the graphics object
+    cnv.ellipse(0,0,random(15));
   }
-  pop();
+  
+  // pop context in graphics object
+  cnv.pop();
+}
 
+// -----key pressed function set------
+function keyPressed() { //create a new function "KeyPressed"
+  
+   // if press key "q"
+   // then take a screengrab from this canvas 
+   // and save as an image called "Lucia.jpg"
+   if (key === "q") {   
+    saveCanvas("Lucia", "jpg");
+    // console.log("screenshotSave");
+  }
+}
+
+//background resize fuction set up
+function windowResized () {
+  resizeCanvas (window.innerWidth, window.innerHeight)
 }
 
 
