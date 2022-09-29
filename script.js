@@ -230,5 +230,3 @@ function keyPressed() { //create a new function "KeyPressed"
 function windowResized () {
   resizeCanvas (window.innerWidth, window.innerHeight)
 }
-
-
